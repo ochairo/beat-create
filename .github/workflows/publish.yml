@@ -48,7 +48,7 @@ jobs:
           const { unlinkSync } = require('node:fs');
           const { resolve } = require('node:path');
 
-          const expectedName = '@ochairo/create-beat';
+          const expectedName = '@ochairo/beat-create';
           const expectedRepositoryUrl = 'https://github.com/ochairo/beat-create';
 
           const packOutput = execFileSync('npm', ['pack', '--json'], {
@@ -82,11 +82,11 @@ jobs:
           }
           EOF
 
-      - name: Check npm for existing @ochairo/create-beat version
+      - name: Check npm for existing @ochairo/beat-create version
         id: registry
         run: |
           package_version=$(node -p "require('./package.json').version")
-          published_version=$(npm view @ochairo/create-beat version 2>/dev/null || true)
+          published_version=$(npm view @ochairo/beat-create version 2>/dev/null || true)
           echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
           echo "published_version=$published_version" >> "$GITHUB_OUTPUT"
           if [ "$published_version" = "$package_version" ]; then
@@ -95,7 +95,7 @@ jobs:
             echo "skip_publish=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish @ochairo/create-beat to npm
+      - name: Publish @ochairo/beat-create to npm
         if: steps.registry.outputs.skip_publish != 'true'
         run: npm publish --provenance --access public
         env:
@@ -104,4 +104,4 @@ jobs:
       - name: Report skipped publish
         if: steps.registry.outputs.skip_publish == 'true'
         run: |
-          echo "@ochairo/create-beat@${{ steps.registry.outputs.package_version }} is already on npm."
+          echo "@ochairo/beat-create@${{ steps.registry.outputs.package_version }} is already on npm."

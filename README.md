@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h1>create beat</h1>
+<h1>beat create</h1>
 
 [Pulse](https://github.com/ochairo/pulse?tab=readme-ov-file#-pulse)-native JSX framework for direct-DOM client-rendered SPA applications.<br>
 _Fine-grained rendering with explicit routing and async primitives._
@@ -21,8 +21,8 @@ Scaffold a Beat app with:
 Usage:
 
 ```sh
-pnpm create @ochairo/beat my-app
-pnpm create @ochairo/beat my-app --template showcases
+pnpm dlx @ochairo/beat-create my-app
+pnpm dlx @ochairo/beat-create my-app --template showcases
 ```
 
 The generated app includes a small task workflow so the project starts with real state,

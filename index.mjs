@@ -131,7 +131,7 @@ async function promptForProjectName() {
 
 function printUsage() {
   console.log(
-    "Usage: pnpm create @ochairo/beat [project-name] [--template starter|showcases] [--force]",
+    "Usage: pnpm dlx @ochairo/beat-create [project-name] [--template starter|showcases] [--force]",
   );
 }
 
