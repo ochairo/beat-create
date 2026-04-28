@@ -1,0 +1,107 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Verify tag matches version
+        run: |
+          node <<'EOF'
+          const { readFileSync } = require('node:fs');
+
+          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+          const tag = process.env.GITHUB_REF_NAME;
+          const expected = `v${pkg.version}`;
+
+          if (tag !== expected) {
+            console.error(`Tag ${tag} does not match package.json version ${pkg.version}.`);
+            process.exit(1);
+          }
+          EOF
+
+      - name: Verify package can be packed
+        run: npm pack --dry-run
+
+      - name: Verify packed package provenance metadata
+        run: |
+          node <<'EOF'
+          const { execFileSync } = require('node:child_process');
+          const { unlinkSync } = require('node:fs');
+          const { resolve } = require('node:path');
+
+          const expectedName = '@ochairo/create-beat';
+          const expectedRepositoryUrl = 'https://github.com/ochairo/beat-create';
+
+          const packOutput = execFileSync('npm', ['pack', '--json'], {
+            cwd: process.cwd(),
+            encoding: 'utf8',
+          });
+          const [{ filename }] = JSON.parse(packOutput);
+          const tarballPath = resolve(process.cwd(), filename);
+
+          try {
+            const manifestText = execFileSync(
+              'tar',
+              ['-xOf', tarballPath, 'package/package.json'],
+              { encoding: 'utf8' },
+            );
+            const manifest = JSON.parse(manifestText);
+
+            if (manifest.name !== expectedName) {
+              throw new Error(
+                `Packed package name ${manifest.name} does not match expected ${expectedName}.`,
+              );
+            }
+
+            if (manifest.repository?.url !== expectedRepositoryUrl) {
+              throw new Error(
+                `Packed package has repository.url ${JSON.stringify(manifest.repository?.url ?? '')}, expected ${JSON.stringify(expectedRepositoryUrl)}.`,
+              );
+            }
+          } finally {
+            unlinkSync(tarballPath);
+          }
+          EOF
+
+      - name: Check npm for existing @ochairo/create-beat version
+        id: registry
+        run: |
+          package_version=$(node -p "require('./package.json').version")
+          published_version=$(npm view @ochairo/create-beat version 2>/dev/null || true)
+          echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
+          echo "published_version=$published_version" >> "$GITHUB_OUTPUT"
+          if [ "$published_version" = "$package_version" ]; then
+            echo "skip_publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip_publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish @ochairo/create-beat to npm
+        if: steps.registry.outputs.skip_publish != 'true'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Report skipped publish
+        if: steps.registry.outputs.skip_publish == 'true'
+        run: |
+          echo "@ochairo/create-beat@${{ steps.registry.outputs.package_version }} is already on npm."
