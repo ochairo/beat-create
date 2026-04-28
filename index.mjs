@@ -31,13 +31,21 @@ export async function scaffoldBeatApp(options) {
   }
 
   const templateDir = resolveTemplateDirectory(template);
-  const files = collectTemplateFiles(templateDir, packageName, targetDirectory, template);
+  const files = collectTemplateFiles(
+    templateDir,
+    packageName,
+    targetDirectory,
+    template,
+  );
 
   await Promise.all(
     Object.entries(files).map(async ([relativePath, content]) => {
       const outputPath = resolve(targetDirectory, relativePath);
       const parentPath = relativePath.includes("/")
-        ? resolve(targetDirectory, relativePath.slice(0, relativePath.lastIndexOf("/")))
+        ? resolve(
+            targetDirectory,
+            relativePath.slice(0, relativePath.lastIndexOf("/")),
+          )
         : targetDirectory;
 
       await mkdir(parentPath, { recursive: true });
@@ -56,7 +64,8 @@ export async function main(argv = process.argv.slice(2)) {
 
   const parsed = parseCliArguments(argv);
   const promptedTarget = parsed.target ? "" : await promptForProjectName();
-  const requestedTarget = parsed.target ?? (promptedTarget.trim() || "beat-app");
+  const requestedTarget =
+    parsed.target ?? (promptedTarget.trim() || "beat-app");
   const resolvedTarget = resolve(process.cwd(), requestedTarget);
   const packageName = basename(resolvedTarget);
 
@@ -136,7 +145,8 @@ function printUsage() {
 }
 
 function printNextSteps(targetDirectory, requestedTarget, template) {
-  const relativeTarget = requestedTarget === "." ? "." : basename(targetDirectory);
+  const relativeTarget =
+    requestedTarget === "." ? "." : basename(targetDirectory);
 
   console.log(`\nScaffolded Beat app in ${targetDirectory}`);
   console.log(`Template: ${template}`);
@@ -198,7 +208,12 @@ function resolveTemplateDirectory(template) {
   return resolve(CREATE_BEAT_DIRECTORY, "templates", dirName);
 }
 
-function collectTemplateFiles(templateDir, packageName, targetDirectory, template) {
+function collectTemplateFiles(
+  templateDir,
+  packageName,
+  targetDirectory,
+  template,
+) {
   const localPackages = findLocalWorkspacePackages(targetDirectory);
   const files = {};
 
@@ -212,10 +227,18 @@ function collectTemplateFiles(templateDir, packageName, targetDirectory, templat
       }
 
       const rel = relative(templateDir, fullPath).split("\\").join("/");
-      let content = readFileSync(fullPath, "utf8").replaceAll("{{name}}", packageName);
+      let content = readFileSync(fullPath, "utf8").replaceAll(
+        "{{name}}",
+        packageName,
+      );
 
       if (rel === "package.json" && localPackages) {
-        content = injectWorkspaceDependencies(content, targetDirectory, localPackages, template);
+        content = injectWorkspaceDependencies(
+          content,
+          targetDirectory,
+          localPackages,
+          template,
+        );
       }
 
       files[rel] = content;
@@ -226,14 +249,22 @@ function collectTemplateFiles(templateDir, packageName, targetDirectory, templat
   return files;
 }
 
-function injectWorkspaceDependencies(packageJsonContent, targetDirectory, localPackages, template) {
+function injectWorkspaceDependencies(
+  packageJsonContent,
+  targetDirectory,
+  localPackages,
+  template,
+) {
   const pkg = JSON.parse(packageJsonContent);
 
-  pkg.dependencies[BEAT_PACKAGE_NAME] = `file:${toPortableRelativePath(targetDirectory, localPackages.beatDirectory)}`;
-  pkg.dependencies[PULSE_PACKAGE_NAME] = `file:${toPortableRelativePath(targetDirectory, localPackages.pulseDirectory)}`;
+  pkg.dependencies[BEAT_PACKAGE_NAME] =
+    `file:${toPortableRelativePath(targetDirectory, localPackages.beatDirectory)}`;
+  pkg.dependencies[PULSE_PACKAGE_NAME] =
+    `file:${toPortableRelativePath(targetDirectory, localPackages.pulseDirectory)}`;
 
   if (template === "showcases" && localPackages.beatUiDirectory) {
-    pkg.dependencies[BEAT_UI_PACKAGE_NAME] = `file:${toPortableRelativePath(targetDirectory, localPackages.beatUiDirectory)}`;
+    pkg.dependencies[BEAT_UI_PACKAGE_NAME] =
+      `file:${toPortableRelativePath(targetDirectory, localPackages.beatUiDirectory)}`;
   }
 
   pkg.pnpm = {
@@ -266,7 +297,10 @@ function findInstalledWorkspacePackages(targetDirectory) {
     return null;
   }
 
-  const beatUiDirectory = isExpectedPackageDirectory(BEAT_UI_PACKAGE_DIRECTORY, BEAT_UI_PACKAGE_NAME)
+  const beatUiDirectory = isExpectedPackageDirectory(
+    BEAT_UI_PACKAGE_DIRECTORY,
+    BEAT_UI_PACKAGE_NAME,
+  )
     ? BEAT_UI_PACKAGE_DIRECTORY
     : null;
 
@@ -289,7 +323,10 @@ function findPackagesFromTargetAncestors(targetDirectory) {
       isExpectedPackageDirectory(pulseDirectory, PULSE_PACKAGE_NAME)
     ) {
       const beatUiDir = resolve(currentDirectory, "beat-ui");
-      const beatUiDirectory = isExpectedPackageDirectory(beatUiDir, BEAT_UI_PACKAGE_NAME)
+      const beatUiDirectory = isExpectedPackageDirectory(
+        beatUiDir,
+        BEAT_UI_PACKAGE_NAME,
+      )
         ? beatUiDir
         : null;
 

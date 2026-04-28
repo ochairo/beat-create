@@ -4,19 +4,9 @@
 
 <h1>beat create</h1>
 
-[Pulse](https://github.com/ochairo/pulse?tab=readme-ov-file#-pulse)-native JSX framework for direct-DOM client-rendered SPA applications.<br>
-_Fine-grained rendering with explicit routing and async primitives._
+Scaffold a [Beat](https://github.com/ochairo/beat) app with Vite, TypeScript, and [Pulse](https://github.com/ochairo/pulse).
 
 </div>
-
-Scaffold a Beat app with:
-
-- Vite
-- TypeScript
-- `@ochairo/beat`
-- `@ochairo/pulse`
-- a complete starter app shell
-- starter styles and `.gitignore`
 
 Usage:
 
@@ -25,9 +15,4 @@ pnpm dlx @ochairo/beat-create my-app
 pnpm dlx @ochairo/beat-create my-app --template showcases
 ```
 
-The generated app includes a small task workflow so the project starts with real state,
-real actions, and a layout worth extending.
-
-Templates:
-
-- `showcases`: outlet shell with Beat router, links, route loader data, and a resource example
+The default template scaffolds a minimal counter app. Use `--template showcases` for a multi-page app with crypto, kanban, and spreadsheet examples.
