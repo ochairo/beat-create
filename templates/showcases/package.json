@@ -9,16 +9,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@ochairo/beat": "^1.1.3",
-    "@ochairo/beat-ui": "^0.0.1",
-    "@ochairo/pulse": "^1.1.2"
+    "@ochairo/beat": "^1.1.5",
+    "@ochairo/beat-ui": "^0.0.2",
+    "@ochairo/pulse": "^1.1.3"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^7.3.2"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "pnpm": ">=10.0.0"
+    "node": ">=20.0.0"
   }
 }
