@@ -1,4 +1,4 @@
-import { bindText, component } from "@ochairo/beat";
+import { component } from "@ochairo/beat";
 import { pulse } from "@ochairo/pulse";
 
 const counter = pulse(0);
@@ -31,9 +31,7 @@ export const App = component(() => {
                   >
                     -
                   </button>
-                  <strong class="counter-stepper__value">
-                    {bindText(counter)}
-                  </strong>
+                  <strong class="counter-stepper__value">{counter}</strong>
                   <button
                     class="counter-stepper__button"
                     onClick={() => counter.set(counter.get() + 1)}

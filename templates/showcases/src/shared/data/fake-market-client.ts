@@ -1,5 +1,5 @@
 import { pulse, type Pulse } from "@ochairo/pulse";
-import { ALL_SYMBOLS } from "../market/market-symbols.ts";
+import { ALL_SYMBOLS } from "../market/market-symbols";
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 

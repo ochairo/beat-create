@@ -1,0 +1,106 @@
+/* ── Ticker card ─────────────────────────────────────────────────────────────── */
+
+.card {
+  padding: 1.25rem 1.5rem;
+  background: var(--beat-ui-color-background-elevated);
+  border: 1px solid var(--beat-ui-color-border);
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.placeholderCard {
+  composes: card;
+  opacity: 0.45;
+}
+
+.cardContent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.textArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.symbolRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.125rem;
+}
+
+.symbolIcon {
+  flex-shrink: 0;
+}
+
+.symbolTextRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.375rem;
+}
+
+.symbolBase {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.symbolQuote {
+  font-size: 0.75rem;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.coinName {
+  font-size: 0.75rem;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.priceValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.placeholderPrice {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.connecting {
+  font-size: 0.875rem;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.changePositive {
+  color: var(--beat-ui-color-success);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.changeNegative {
+  color: var(--beat-ui-color-danger);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.sparkArea {
+  flex: 0 0 55%;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+}

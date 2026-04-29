@@ -1,8 +1,8 @@
 import { component, onCleanup, type BeatRouter } from "@ochairo/beat";
 import { pulse } from "@ochairo/pulse";
 import type { BeatUiRenderable, BeatUiThemeController } from "@ochairo/beat-ui";
-import { Header } from "./Header.tsx";
-import { SideNav } from "./SideNav.tsx";
+import { Header } from "./Header";
+import { SideNav } from "./SideNav";
 
 // ── Props ──────────────────────────────────────────────────────────────────────
 

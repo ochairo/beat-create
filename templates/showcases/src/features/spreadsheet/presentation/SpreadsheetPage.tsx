@@ -1,6 +1,5 @@
 import { component } from "@ochairo/beat";
 import {
-  Button,
   ExcelTable,
   type ExcelTableColumn,
   type ExcelTableGrid,
@@ -76,7 +75,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Alice" },
     { value: "In Progress" },
     { value: "high" },
-    { value: 5 },
+    { value: "5" },
     { value: "true" },
     { value: "2026-04-20" },
     { value: "2026-05-02" },
@@ -89,7 +88,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Dave" },
     { value: "Review" },
     { value: "medium" },
-    { value: 5 },
+    { value: "5" },
     { value: "false" },
     { value: "2026-04-22" },
     { value: "2026-05-05" },
@@ -102,7 +101,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Alice" },
     { value: "Review" },
     { value: "medium" },
-    { value: 8 },
+    { value: "8" },
     { value: "false" },
     { value: "2026-04-24" },
     { value: "2026-05-08" },
@@ -115,7 +114,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Carol" },
     { value: "Review" },
     { value: "medium" },
-    { value: 5 },
+    { value: "5" },
     { value: "false" },
     { value: "2026-04-25" },
     { value: "2026-05-08" },
@@ -128,7 +127,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Alice" },
     { value: "In Progress" },
     { value: "critical" },
-    { value: 21 },
+    { value: "21" },
     { value: "true" },
     { value: "2026-04-27" },
     { value: "2026-05-18" },
@@ -141,7 +140,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Dave" },
     { value: "Done" },
     { value: "low" },
-    { value: 3 },
+    { value: "3" },
     { value: "false" },
     { value: "2026-04-07" },
     { value: "2026-04-11" },
@@ -157,7 +156,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Sam" },
     { value: "In Progress" },
     { value: "medium" },
-    { value: 5 },
+    { value: "5" },
     { value: "false" },
     { value: "2026-04-28" },
     { value: "2026-05-05" },
@@ -170,7 +169,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Carol" },
     { value: "Backlog" },
     { value: "critical" },
-    { value: 3 },
+    { value: "3" },
     { value: "true" },
     { value: "2026-04-27" },
     { value: "2026-04-28" },
@@ -183,7 +182,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Sam" },
     { value: "Backlog" },
     { value: "high" },
-    { value: 8 },
+    { value: "8" },
     { value: "false" },
     { value: "2026-04-28" },
     { value: "2026-05-06" },
@@ -196,7 +195,7 @@ const INITIAL_GRID: ExcelTableGrid = [
     { value: "Bob" },
     { value: "In Progress" },
     { value: "high" },
-    { value: 13 },
+    { value: "13" },
     { value: "false" },
     { value: "2026-04-29" },
     { value: "2026-05-09" },
@@ -233,20 +232,6 @@ export const SpreadsheetPage = component(() => {
   const grid = pulse<ExcelTableGrid>(INITIAL_GRID);
   const columns = pulse<readonly ExcelTableColumn[]>(INITIAL_COLUMNS);
 
-  function addRow(): void {
-    const empty = columns.get().map(() => ({ value: "" }));
-    grid.set([...grid.get(), empty]);
-  }
-
-  function addColumn(): void {
-    const idx = columns.get().length + 1;
-    columns.set([
-      ...columns.get(),
-      { key: `col${idx}`, header: `Column ${idx}`, width: "10rem" },
-    ]);
-    grid.set(grid.get().map((row) => [...row, { value: "" }]));
-  }
-
   return (
     <div style={pageStyle}>
       {/* Header */}
@@ -261,14 +246,6 @@ export const SpreadsheetPage = component(() => {
             copy/paste
           </div>
         </div>
-        <div style="display:flex;gap:0.5rem">
-          <Button appearance="ghost" onPress={addRow}>
-            + Row
-          </Button>
-          <Button appearance="ghost" onPress={addColumn}>
-            + Column
-          </Button>
-        </div>
       </div>
 
       {/* Table */}
@@ -278,7 +255,7 @@ export const SpreadsheetPage = component(() => {
           columns={columns.get()}
           showRowHeaders={true}
           onColumnsChange={(cols) => columns.set(cols)}
-          onChange={(next) => grid.set(next)}
+          onValueChange={(next) => grid.set(next)}
         />
       </div>
     </div>

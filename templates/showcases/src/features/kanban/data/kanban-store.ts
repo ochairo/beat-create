@@ -1,11 +1,11 @@
 import type { Pulse } from "@ochairo/pulse";
 import { pulse } from "@ochairo/pulse";
-import type { Task, TaskId, ColumnId } from "../domain/types.ts";
+import type { Task, TaskId, ColumnId } from "../domain/types";
 import type {
   KanbanApi,
   CreateTaskInput,
   UpdateTaskInput,
-} from "./kanban-api.ts";
+} from "./kanban-api";
 
 // ── Store interface ────────────────────────────────────────────────────────────
 

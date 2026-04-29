@@ -97,7 +97,7 @@ export const Header = component<HeaderProps>((props) => {
         </button>
         <div style={logoStyle}>
           <span>◈</span>
-          <span>CryptoFlow</span>
+          <span>Beat Showcase</span>
         </div>
       </div>
       <div style={actionsStyle}>

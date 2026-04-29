@@ -1,0 +1,62 @@
+/* ── Price chart ─────────────────────────────────────────────────────────────── */
+
+.root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 1.25rem;
+  border-bottom: 1px solid var(--beat-ui-color-border);
+  flex-shrink: 0;
+  gap: 0.5rem;
+}
+
+.toolbarLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.rangeBtnGroup {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.rangeBtn {
+  border-radius: 0.3125rem;
+  padding: 0.1875rem 0.5625rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--beat-ui-color-border);
+  background: transparent;
+  color: var(--beat-ui-color-text-muted);
+}
+
+.rangeBtnActive {
+  composes: rangeBtn;
+  border-color: var(--beat-ui-color-primary);
+  background: var(--beat-ui-color-primary);
+  color: #fff;
+}
+
+.chartArea {
+  padding: 0.5rem 0 0.5rem 1.25rem;
+  overflow: visible;
+}
+
+.chartLoading {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--beat-ui-color-text-muted);
+  font-size: 0.875rem;
+}

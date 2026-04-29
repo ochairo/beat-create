@@ -1,4 +1,4 @@
-import type { ChartRange, PriceHistoryPoint } from "../domain/types.ts";
+import type { ChartRange, PriceHistoryPoint } from "../domain/types";
 
 // ── Base prices ────────────────────────────────────────────────────────────────
 

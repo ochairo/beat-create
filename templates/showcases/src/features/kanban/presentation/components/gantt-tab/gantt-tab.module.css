@@ -1,0 +1,82 @@
+/* ── Gantt ────────────────────────────────────────────────────────────────────── */
+
+.ganttRoot {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.ganttToolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1.5rem;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--beat-ui-color-border);
+}
+
+.ganttZoomGroup {
+  display: flex;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.ganttZoomBtn {
+  padding: 0.3rem 0.875rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--beat-ui-color-border);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+  background: var(--beat-ui-color-background-elevated);
+  color: var(--beat-ui-color-text-muted);
+}
+
+.ganttZoomBtnActive {
+  composes: ganttZoomBtn;
+  background: var(--beat-ui-color-primary);
+  color: var(--beat-ui-color-primary-text);
+}
+
+.ganttBody {
+  flex: 1;
+  overflow: hidden;
+  padding: 0.75rem;
+}
+
+.ganttContainer {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  border: 1px solid var(--beat-ui-color-border);
+}
+
+/* ── Gantt scroll ────────────────────────────────────────────────────────────── */
+
+.ganttScroll {
+  scrollbar-width: thin;
+}
+
+.ganttScroll::-webkit-scrollbar {
+  height: 12px;
+  width: 8px;
+}
+
+.ganttScroll::-webkit-scrollbar-track {
+  background: var(--beat-ui-color-background-subtle);
+  border-radius: 6px;
+}
+
+.ganttScroll::-webkit-scrollbar-thumb {
+  background: var(--beat-ui-color-border);
+  border-radius: 6px;
+  border: 2px solid var(--beat-ui-color-background-subtle);
+}
+
+.ganttScroll::-webkit-scrollbar-thumb:hover {
+  background: var(--beat-ui-color-text-muted);
+}
