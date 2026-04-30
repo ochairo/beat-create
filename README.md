@@ -10,6 +10,8 @@ Scaffold a [Beat](https://github.com/ochairo/beat) app with Vite, TypeScript, an
 [![npm downloads](https://img.shields.io/npm/dm/@ochairo/beat-create)](https://www.npmjs.com/package/@ochairo/beat-create)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
+[Documentation](https://ochairo.github.io/beat-site/)
+
 </div>
 
 Usage:

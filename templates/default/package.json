@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ochairo/beat": "^1.5.0",
+    "@ochairo/beat": "^1.5.1",
     "@ochairo/pulse": "^1.5.0"
   },
   "devDependencies": {
