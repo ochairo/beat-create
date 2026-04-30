@@ -1,31 +1,12 @@
-*,
-*::before,
-*::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  background-color: #1a1b26;
-  color: #c0caf5;
-  min-height: 100vh;
-}
-
-#root {
+.hero {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-}
-
-.hero {
   text-align: center;
+  height: 100%;
   max-width: 560px;
+  margin: 0 auto;
   padding: 2rem;
 }
 
@@ -36,8 +17,12 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.hero .highlight {
-  background: linear-gradient(135deg, #7aa2f7, #bb9af7);
+.highlight {
+  background: linear-gradient(
+    135deg,
+    var(--beat-ui-color-primary),
+    var(--beat-ui-color-secondary)
+  );
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -47,12 +32,12 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 1.3;
-  color: #c0caf5;
+  color: var(--beat-ui-color-text);
   margin-bottom: 1rem;
 }
 
 .hero p {
   font-size: 0.875rem;
   line-height: 1.6;
-  color: #a9b1d6;
+  color: var(--beat-ui-color-text-muted);
 }

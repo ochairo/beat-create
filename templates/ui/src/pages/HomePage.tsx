@@ -1,11 +1,11 @@
 import { component } from "@ochairo/beat";
 
-import "./styles.css";
+import styles from "./HomePage.module.css";
 
-export const App = component(() => (
-  <div class="hero">
+export const HomePage = component(() => (
+  <div class={styles["hero"]}>
     <h1>
-      <span class="highlight">Beat</span>
+      <span class={styles["highlight"]}>Beat</span>
     </h1>
     <h2>Pulse-native JSX framework</h2>
     <p>

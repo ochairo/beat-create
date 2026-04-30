@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ochairo/beat": "^1.5.0",
+    "@ochairo/beat-ui": "^1.5.4",
     "@ochairo/pulse": "^1.5.0"
   },
   "devDependencies": {

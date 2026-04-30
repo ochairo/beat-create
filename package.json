@@ -1,13 +1,21 @@
 {
   "name": "@ochairo/beat-create",
-  "version": "1.1.5",
+  "version": "1.5.0",
   "description": "Scaffold a Beat application with Vite, TypeScript, and Pulse.",
   "type": "module",
   "bin": {
-    "create-beat": "./index.mjs"
+    "create-beat": "./dist/bin.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "files": [
-    "index.mjs",
+    "dist",
     "README.md",
     "templates/**"
   ],
@@ -33,5 +41,16 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "scripts": {
+    "validate": "pnpm test && pnpm typecheck && pnpm build",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.1"
   }
 }

@@ -17,13 +17,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - name: Verify tag matches version
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify tag matches package version
         run: |
           node <<'EOF'
           const { readFileSync } = require('node:fs');
@@ -38,70 +47,10 @@ jobs:
           }
           EOF
 
-      - name: Verify package can be packed
-        run: npm pack --dry-run
+      - name: Run validation
+        run: pnpm validate
 
-      - name: Verify packed package provenance metadata
-        run: |
-          node <<'EOF'
-          const { execFileSync } = require('node:child_process');
-          const { unlinkSync } = require('node:fs');
-          const { resolve } = require('node:path');
-
-          const expectedName = '@ochairo/beat-create';
-          const expectedRepositoryUrl = 'https://github.com/ochairo/beat-create';
-
-          const packOutput = execFileSync('npm', ['pack', '--json'], {
-            cwd: process.cwd(),
-            encoding: 'utf8',
-          });
-          const [{ filename }] = JSON.parse(packOutput);
-          const tarballPath = resolve(process.cwd(), filename);
-
-          try {
-            const manifestText = execFileSync(
-              'tar',
-              ['-xOf', tarballPath, 'package/package.json'],
-              { encoding: 'utf8' },
-            );
-            const manifest = JSON.parse(manifestText);
-
-            if (manifest.name !== expectedName) {
-              throw new Error(
-                `Packed package name ${manifest.name} does not match expected ${expectedName}.`,
-              );
-            }
-
-            if (manifest.repository?.url !== expectedRepositoryUrl) {
-              throw new Error(
-                `Packed package has repository.url ${JSON.stringify(manifest.repository?.url ?? '')}, expected ${JSON.stringify(expectedRepositoryUrl)}.`,
-              );
-            }
-          } finally {
-            unlinkSync(tarballPath);
-          }
-          EOF
-
-      - name: Check npm for existing @ochairo/beat-create version
-        id: registry
-        run: |
-          package_version=$(node -p "require('./package.json').version")
-          published_version=$(npm view @ochairo/beat-create version 2>/dev/null || true)
-          echo "package_version=$package_version" >> "$GITHUB_OUTPUT"
-          echo "published_version=$published_version" >> "$GITHUB_OUTPUT"
-          if [ "$published_version" = "$package_version" ]; then
-            echo "skip_publish=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "skip_publish=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish @ochairo/beat-create to npm
-        if: steps.registry.outputs.skip_publish != 'true'
-        run: npm publish --provenance --access public
+      - name: Publish to npm
+        run: pnpm publish --provenance --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Report skipped publish
-        if: steps.registry.outputs.skip_publish == 'true'
-        run: |
-          echo "@ochairo/beat-create@${{ steps.registry.outputs.package_version }} is already on npm."

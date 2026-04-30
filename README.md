@@ -16,7 +16,7 @@ Usage:
 
 ```sh
 pnpm dlx @ochairo/beat-create my-app
-pnpm dlx @ochairo/beat-create my-app --template showcases
+pnpm dlx @ochairo/beat-create my-app --ui
 ```
 
-The default template scaffolds a minimal counter app. Use `--template showcases` for a multi-page app with crypto, kanban, and spreadsheet examples.
+The default template scaffolds a minimal hello-world app. Use `--ui` for a multi-page app with Beat UI components, a side menu, theme switching, and a component showcase.

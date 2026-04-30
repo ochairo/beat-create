@@ -215,6 +215,7 @@ temp/
 # npm
 package-lock.json (if using pnpm)
 npm-debug.log*
+templates/**/pnpm-lock.yaml
 
 # yarn
 .yarn/*

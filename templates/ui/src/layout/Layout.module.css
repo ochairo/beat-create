@@ -1,0 +1,32 @@
+.brand {
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--beat-ui-color-text);
+  text-decoration: none;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: var(--beat-ui-color-text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition:
+    color 0.15s,
+    background-color 0.15s;
+}
+
+.navLink:hover {
+  color: var(--beat-ui-color-text);
+  background-color: var(--beat-ui-color-background-elevated);
+}
+
+.navLinkActive {
+  color: var(--beat-ui-color-primary);
+}
+
+.navLinkActive:hover {
+  background-color: var(--beat-ui-color-background-elevated);
+}
