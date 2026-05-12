@@ -1,6 +1,6 @@
 {
   "name": "@ochairo/beat-create",
-  "version": "1.5.1",
+  "version": "1.6.6",
   "description": "Scaffold a Beat application with Vite, TypeScript, and Pulse.",
   "type": "module",
   "bin": {
