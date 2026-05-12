@@ -1,0 +1,109 @@
+name: Bug report
+description: Report a reproducible bug with enough detail to investigate it quickly
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report.
+
+        Please include a minimal reproduction whenever possible.
+        For security vulnerabilities, do not open a public issue. Use the repository security policy instead.
+  - type: input
+    id: package_name
+    attributes:
+      label: Affected package
+      description: Which package or module is affected?
+      placeholder: "@ochairo/beat-create"
+    validations:
+      required: true
+  - type: input
+    id: package_version
+    attributes:
+      label: Package version
+      description: Include the exact published version or commit when possible
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: dropdown
+    id: regression
+    attributes:
+      label: Regression?
+      description: Did this work in an earlier version?
+      options:
+        - "Yes"
+        - "No"
+        - "Not sure"
+    validations:
+      required: true
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: How severe is this for your workflow?
+      options:
+        - Blocks usage or release
+        - Major incorrect behavior
+        - Limited workaround exists
+        - Minor issue or polish problem
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Runtime, OS, browser, framework, bundler, package manager, and anything else that matters
+      placeholder: |
+        Node 20.19.1
+        pnpm 10.11.0
+        macOS 15.4
+        Chrome 136
+        Vite 6
+    validations:
+      required: true
+  - type: input
+    id: reproduction_link
+    attributes:
+      label: Reproduction link
+      description: Link to a repo, StackBlitz, CodeSandbox, or gist if available
+      placeholder: https://github.com/...
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the shortest sequence that reproduces the bug
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Stack traces, screenshots, failing assertions, bisect notes, or workarounds
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues for duplicates
+          required: true
+        - label: I reproduced this on a current release or current `develop`
+          required: true
+        - label: I included a minimal reproduction or explained why I could not
+          required: true
+        - label: This is not a security vulnerability or private disclosure issue
+          required: true

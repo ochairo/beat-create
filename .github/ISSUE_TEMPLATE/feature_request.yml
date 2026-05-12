@@ -1,0 +1,78 @@
+name: Feature request
+description: Propose a new capability or improvement with clear user value and scope
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion.
+
+        Start with the problem you are solving, then describe the proposed API or behavior.
+        Strong requests usually explain why the change belongs in this package instead of app-level code.
+  - type: input
+    id: package_name
+    attributes:
+      label: Target package
+      placeholder: "@ochairo/beat-create"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem statement
+      description: What limitation, friction, or missing capability are you hitting?
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What are you trying to build or enable?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API, behavior, ergonomics, or workflow you want
+    validations:
+      required: true
+  - type: textarea
+    id: api_sketch
+    attributes:
+      label: API sketch or example
+      description: Optional example showing the desired usage
+      render: ts
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Existing workarounds, competing designs, or reasons not to do this
+  - type: dropdown
+    id: breaking_change
+    attributes:
+      label: Breaking change risk
+      options:
+        - No
+        - Possibly
+        - Yes
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Ecosystem impact
+      description: Effects on users, docs, examples, integrations, or migration paths
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched the existing issues for related requests
+          required: true
+        - label: I described the problem before proposing a solution
+          required: true
+        - label: I explained why this should live in the package rather than app code
+          required: true
