@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ochairo/beat": "^1.6.6",
-    "@ochairo/beat-ui": "^1.6.6",
-    "@ochairo/pulse": "^1.6.6"
+    "@ochairo/beat": "^1.6.10",
+    "@ochairo/beat-ui": "^1.6.10",
+    "@ochairo/pulse": "^1.6.10"
   },
   "devDependencies": {
     "typescript": "^5.8.0",
