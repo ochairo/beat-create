@@ -56,8 +56,17 @@ npx @ochairo/beat-create my-app --workspace /absolute/path/to/workspace
 ```
 
 The workspace must contain ordinary `beat` and `pulse` directories with matching
-package names; `--ui` additionally requires `beat-ui`. Its packages will be linked
-with `file:` dependencies and can execute code when the generated app is run.
+package names; `--ui` additionally requires `beat-ui`. Build those packages first:
+installation does not run their build or lifecycle scripts. Workspace installation
+uses npm 11 or later with `file:` dependencies, `install-links=true`, and npm
+overrides so the app, Beat, and Beat UI share the selected Beat and Pulse packages.
+npm installs package copies and their dependencies into the app; the workspace does
+not need its own installed dependencies. Generated `.npmrc` preserves this layout
+for later npm installs and `npm ci` (use `--ignore-scripts` to keep scripts disabled).
+
+Installed packages are snapshots. After rebuilding a workspace package, remove its
+copy under the app's `node_modules/@ochairo/` and run the printed install command
+again to refresh it. Workspace code can execute when the generated app is run.
 Package names identify the expected packages; they do not establish trust or version compatibility. Ancestor
 directories are never searched automatically. The programmatic API accepts the
 same explicit path as `ScaffoldOptions.workspaceRoot`.

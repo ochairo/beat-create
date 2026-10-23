@@ -75,7 +75,9 @@ describe("scaffold filesystem boundaries", () => {
     await scaffoldBeatApp({ force: false, packageName: "app", targetDirectory: target, workspaceRoot: root }, baseDir);
     const pkg = JSON.parse(await readFile(join(target, "package.json"), "utf8"));
     expect(pkg.dependencies["@ochairo/beat"]).toBe("file:../beat");
-    expect(pkg.pnpm.overrides["@ochairo/pulse"]).toBe("file:../pulse");
+    expect(pkg.overrides).toEqual({ "@ochairo/beat": "$@ochairo/beat", "@ochairo/pulse": "$@ochairo/pulse" });
+    expect(pkg.pnpm).toBeUndefined();
+    expect(await readFile(join(target, ".npmrc"), "utf8")).toBe("install-links=true\n");
     await expect(scaffoldBeatApp({ force: false, packageName: "ui", targetDirectory: join(root, "ui"), workspaceRoot: root, ui: true }, baseDir)).rejects.toThrow();
     await expect(readFile(join(root, "ui/package.json"))).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -87,6 +89,39 @@ describe("scaffold filesystem boundaries", () => {
     await symlink(external, join(root, "app"));
     await expect(scaffoldBeatApp({ force: true, packageName: "app", targetDirectory: join(root, "app") }, baseDir)).rejects.toThrow("symbolic link");
     await expect(readFile(join(external, "package.json"))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("preflights generated workspace npm configuration before any forced writes", async () => {
+    const root = await scratch();
+    for (const name of ["beat", "pulse"]) {
+      await mkdir(join(root, name));
+      await writeFile(join(root, name, "package.json"), JSON.stringify({ name: `@ochairo/${name}` }));
+    }
+    const target = join(root, "app");
+    const external = join(root, "external.npmrc");
+    await mkdir(target);
+    await writeFile(external, "sentinel");
+    await writeFile(join(target, "package.json"), "existing project");
+    await symlink(external, join(target, ".npmrc"));
+    await expect(scaffoldBeatApp({ force: true, packageName: "app", targetDirectory: target, workspaceRoot: root }, baseDir)).rejects.toThrow();
+    expect(await readFile(external, "utf8")).toBe("sentinel");
+    expect(await readFile(join(target, "package.json"), "utf8")).toBe("existing project");
+  });
+
+  it("rejects a template that collides with generated workspace npm configuration", async () => {
+    const root = await scratch();
+    for (const name of ["beat", "pulse"]) {
+      await mkdir(join(root, name));
+      await writeFile(join(root, name, "package.json"), JSON.stringify({ name: `@ochairo/${name}` }));
+    }
+    const source = join(root, "source");
+    const template = join(source, "templates/default");
+    await mkdir(template, { recursive: true });
+    await writeFile(join(template, "package.json"), JSON.stringify({ dependencies: {} }));
+    await writeFile(join(template, ".npmrc"), "install-links=false");
+    const target = join(root, "app");
+    await expect(scaffoldBeatApp({ force: false, packageName: "app", targetDirectory: target, workspaceRoot: root }, source)).rejects.toThrow("Duplicate template destination: .npmrc");
+    await expect(readFile(join(target, "package.json"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
   it("refuses linked template entries before creating the target", async () => {
@@ -149,5 +184,7 @@ describe("scaffold filesystem boundaries", () => {
     expect(pkg.dependencies["@ochairo/beat"]).toBe("^2.0.0");
     expect(pkg.dependencies["@ochairo/pulse"]).toBe("^2.0.0");
     expect(pkg.pnpm).toBeUndefined();
+    expect(pkg.overrides).toBeUndefined();
+    await expect(readFile(join(target, ".npmrc"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 });

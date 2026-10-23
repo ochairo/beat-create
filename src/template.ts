@@ -59,6 +59,11 @@ export function collectTemplateFiles(
   }
 
   collect(templateDir, templateDir);
+  if (localPackages) {
+    if (".npmrc" in files) throw new Error("Duplicate template destination: .npmrc");
+    // Keep later npm install/ci consistent with the automatic packed installation.
+    files[".npmrc"] = "install-links=true\n";
+  }
   return files;
 }
 
@@ -75,25 +80,33 @@ function injectWorkspaceDependencies(
   localPackages: WorkspacePackages,
   ui: boolean,
 ): string {
-  const pkg = JSON.parse(packageJsonContent);
+  const pkg: unknown = JSON.parse(packageJsonContent);
+  if (!isRecord(pkg) || !isRecord(pkg["dependencies"])) {
+    throw new Error("Template package.json must contain a dependencies object.");
+  }
+  const dependencies = pkg["dependencies"];
 
-  pkg.dependencies[BEAT_PACKAGE_NAME] =
+  dependencies[BEAT_PACKAGE_NAME] =
     `file:${toPortableRelativePath(targetDirectory, localPackages.beatDirectory)}`;
-  pkg.dependencies[PULSE_PACKAGE_NAME] =
+  dependencies[PULSE_PACKAGE_NAME] =
     `file:${toPortableRelativePath(targetDirectory, localPackages.pulseDirectory)}`;
 
   if (ui && localPackages.beatUiDirectory) {
-    pkg.dependencies[BEAT_UI_PACKAGE_NAME] =
+    dependencies[BEAT_UI_PACKAGE_NAME] =
       `file:${toPortableRelativePath(targetDirectory, localPackages.beatUiDirectory)}`;
   }
 
-  pkg.pnpm = {
-    overrides: {
-      [PULSE_PACKAGE_NAME]: `file:${toPortableRelativePath(targetDirectory, localPackages.pulseDirectory)}`,
-    },
+  // Every consumer uses the application's selected runtime packages, including UI.
+  pkg["overrides"] = {
+    [BEAT_PACKAGE_NAME]: `$${BEAT_PACKAGE_NAME}`,
+    [PULSE_PACKAGE_NAME]: `$${PULSE_PACKAGE_NAME}`,
   };
 
   return `${JSON.stringify(pkg, null, 2)}\n`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function toPortableRelativePath(

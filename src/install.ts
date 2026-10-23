@@ -5,6 +5,7 @@ import { basename, delimiter, dirname, isAbsolute, relative, resolve, sep } from
 /** Fixed policy for a local install, regardless of inherited production/global settings. */
 export const INSTALL_ARGUMENTS = [
   "install", "--ignore-scripts", "--global=false", "--workspaces=false",
+  "--install-links=true",
   "--include=dev", "--include=optional", "--dry-run=false", "--package-lock-only=false",
   "--no-audit", "--no-fund", "--prefix=.",
 ] as const;
