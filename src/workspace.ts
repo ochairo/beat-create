@@ -1,107 +1,30 @@
-import { existsSync, readFileSync } from "node:fs";
-import { relative, resolve } from "node:path";
+import { lstatSync, readFileSync, realpathSync } from "node:fs";
+import { resolve } from "node:path";
+import type { WorkspacePackages } from "./types.js";
 
-import type { WorkspacePackages } from "./types";
+/** The caller explicitly selects this root; package names validate shape, not trust. */
+export function resolveWorkspacePackages(root: string, ui: boolean): WorkspacePackages {
+  if (root === "") throw new Error("Workspace directory cannot be empty.");
+  const requested = resolve(root);
+  if (!lstatSync(requested).isDirectory()) throw new Error(`Workspace is not an ordinary directory: ${requested}`);
+  const canonical = realpathSync(requested);
 
-const BEAT_PACKAGE_NAME = "@ochairo/beat";
-const PULSE_PACKAGE_NAME = "@ochairo/pulse";
-const BEAT_UI_PACKAGE_NAME = "@ochairo/beat-ui";
-
-export function findLocalWorkspacePackages(
-  monorepoRoot: string,
-  targetDirectory: string,
-): WorkspacePackages | null {
-  return (
-    findInstalledWorkspacePackages(monorepoRoot, targetDirectory) ??
-    findPackagesFromTargetAncestors(targetDirectory)
-  );
-}
-
-function findInstalledWorkspacePackages(
-  monorepoRoot: string,
-  targetDirectory: string,
-): WorkspacePackages | null {
-  const beatDirectory = resolve(monorepoRoot, "beat");
-  const pulseDirectory = resolve(monorepoRoot, "pulse");
-
-  if (
-    !isExpectedPackageDirectory(beatDirectory, BEAT_PACKAGE_NAME) ||
-    !isExpectedPackageDirectory(pulseDirectory, PULSE_PACKAGE_NAME)
-  ) {
-    return null;
+  function packageDirectory(name: string): string {
+    const directory = resolve(canonical, name);
+    const manifest = resolve(directory, "package.json");
+    if (!lstatSync(directory).isDirectory() || !lstatSync(manifest).isFile()) {
+      throw new Error(`Workspace package must use ordinary directories and files: ${name}`);
+    }
+    const parsed: unknown = JSON.parse(readFileSync(manifest, "utf8"));
+    if (typeof parsed !== "object" || parsed === null || !("name" in parsed) || parsed.name !== `@ochairo/${name}`) {
+      throw new Error(`Expected workspace package @ochairo/${name}: ${directory}`);
+    }
+    return directory;
   }
-
-  const relativeToRoot = relative(monorepoRoot, targetDirectory);
-
-  if (relativeToRoot === "" || relativeToRoot.startsWith("..")) {
-    return null;
-  }
-
-  const beatUiDirectory = resolve(monorepoRoot, "beat-ui");
 
   return {
-    beatDirectory,
-    pulseDirectory,
-    beatUiDirectory: isExpectedPackageDirectory(
-      beatUiDirectory,
-      BEAT_UI_PACKAGE_NAME,
-    )
-      ? beatUiDirectory
-      : null,
+    beatDirectory: packageDirectory("beat"),
+    pulseDirectory: packageDirectory("pulse"),
+    beatUiDirectory: ui ? packageDirectory("beat-ui") : null,
   };
-}
-
-function findPackagesFromTargetAncestors(
-  targetDirectory: string,
-): WorkspacePackages | null {
-  let currentDirectory = resolve(targetDirectory, "..");
-
-  while (true) {
-    const beatDirectory = resolve(currentDirectory, "beat");
-    const pulseDirectory = resolve(currentDirectory, "pulse");
-
-    if (
-      isExpectedPackageDirectory(beatDirectory, BEAT_PACKAGE_NAME) &&
-      isExpectedPackageDirectory(pulseDirectory, PULSE_PACKAGE_NAME)
-    ) {
-      const beatUiDir = resolve(currentDirectory, "beat-ui");
-
-      return {
-        beatDirectory,
-        pulseDirectory,
-        beatUiDirectory: isExpectedPackageDirectory(
-          beatUiDir,
-          BEAT_UI_PACKAGE_NAME,
-        )
-          ? beatUiDir
-          : null,
-      };
-    }
-
-    const parentDirectory = resolve(currentDirectory, "..");
-
-    if (parentDirectory === currentDirectory) {
-      return null;
-    }
-
-    currentDirectory = parentDirectory;
-  }
-}
-
-function isExpectedPackageDirectory(
-  directoryPath: string,
-  expectedPackageName: string,
-): boolean {
-  const packageJsonPath = resolve(directoryPath, "package.json");
-
-  if (!existsSync(packageJsonPath)) {
-    return false;
-  }
-
-  try {
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-    return packageJson.name === expectedPackageName;
-  } catch {
-    return false;
-  }
 }

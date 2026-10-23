@@ -1,8 +1,8 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { lstatSync, readFileSync, readdirSync } from "node:fs";
 import { relative, resolve } from "node:path";
 
-import type { WorkspacePackages } from "./types";
-import { findLocalWorkspacePackages } from "./workspace";
+import type { WorkspacePackages } from "./types.js";
+import { resolveWorkspacePackages } from "./workspace.js";
 
 const BEAT_PACKAGE_NAME = "@ochairo/beat";
 const PULSE_PACKAGE_NAME = "@ochairo/pulse";
@@ -12,29 +12,33 @@ export function collectTemplateFiles(
   templateDir: string,
   packageName: string,
   targetDirectory: string,
-  monorepoRoot: string,
+  workspaceRoot: string | undefined,
   ui: boolean,
 ): Record<string, string> {
-  const localPackages = findLocalWorkspacePackages(
-    monorepoRoot,
-    targetDirectory,
-  );
-  const files: Record<string, string> = {};
+  const localPackages = workspaceRoot === undefined ? null : resolveWorkspacePackages(workspaceRoot, ui);
+  const files = Object.create(null) as Record<string, string>;
 
   function collect(dir: string, root: string): void {
+    if (!lstatSync(dir).isDirectory()) throw new Error(`Template directory is not an ordinary directory: ${dir}`);
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
       if (entry.name === "node_modules" || entry.name === "pnpm-lock.yaml") {
         continue;
       }
 
       const fullPath = resolve(dir, entry.name);
+      if (entry.name.includes("\\") || entry.isSymbolicLink()) {
+        throw new Error(`Unsafe template entry: ${fullPath}`);
+      }
 
       if (entry.isDirectory()) {
         collect(fullPath, root);
         continue;
       }
 
-      const rel = relative(root, fullPath).split("\\").join("/");
+      if (!entry.isFile()) throw new Error(`Template entry is not an ordinary file: ${fullPath}`);
+      const templatePath = relative(root, fullPath).split("\\").join("/");
+      // npm excludes .gitignore from package tarballs; restore the template name.
+      const rel = templatePath === "_gitignore" ? ".gitignore" : templatePath;
       let content = readFileSync(fullPath, "utf8").replaceAll(
         "{{name}}",
         packageName,
@@ -49,6 +53,7 @@ export function collectTemplateFiles(
         );
       }
 
+      if (rel in files) throw new Error(`Duplicate template destination: ${rel}`);
       files[rel] = content;
     }
   }
