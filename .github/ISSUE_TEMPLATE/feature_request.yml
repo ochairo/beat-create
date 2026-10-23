@@ -55,9 +55,9 @@ body:
     attributes:
       label: Breaking change risk
       options:
-        - No
+        - "No"
         - Possibly
-        - Yes
+        - "Yes"
     validations:
       required: true
   - type: textarea

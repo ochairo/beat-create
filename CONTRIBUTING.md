@@ -4,7 +4,7 @@ Thanks for your interest in contributing.
 
 ## Prerequisites
 
-- Node.js `>=20`
+- Node.js `^24.22.1 || >=26.12.1`
 - pnpm `>=10`
 
 ## Setup
