@@ -25,13 +25,12 @@ describe("resolveTemplateDirectory", () => {
 describe("collectTemplateFiles", () => {
   it("collects files from template directory", () => {
     const templateDir = resolveTemplateDirectory(false, TEMPLATES_ROOT);
-    const monorepoRoot = resolve(import.meta.dirname, "../..");
 
     const files = collectTemplateFiles(
       templateDir,
       "test-app",
       "/tmp/test-app",
-      monorepoRoot,
+      undefined,
       false,
     );
 
@@ -41,17 +40,18 @@ describe("collectTemplateFiles", () => {
     expect(files["package.json"]).toBeDefined();
     expect(files["src/App.tsx"]).toBeDefined();
     expect(files["src/main.tsx"]).toBeDefined();
+    expect(files[".gitignore"]).toContain("node_modules");
+    expect(files["_gitignore"]).toBeUndefined();
   });
 
   it("replaces {{name}} in file contents", () => {
     const templateDir = resolveTemplateDirectory(false, TEMPLATES_ROOT);
-    const monorepoRoot = resolve(import.meta.dirname, "../..");
 
     const files = collectTemplateFiles(
       templateDir,
       "my-app",
       "/tmp/my-app",
-      monorepoRoot,
+      undefined,
       false,
     );
 

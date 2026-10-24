@@ -1,8 +1,9 @@
-import { mkdir, readdir, writeFile } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import type { ScaffoldOptions, ScaffoldResult } from "./types";
-import { collectTemplateFiles, resolveTemplateDirectory } from "./template";
+import type { ScaffoldOptions, ScaffoldResult } from "./types.js";
+import { collectTemplateFiles, resolveTemplateDirectory } from "./template.js";
+import { canonicalTargetDirectory, writeScaffoldFiles } from "./filesystem.js";
 
 export function sanitizePackageName(value: string): string {
   return (
@@ -18,7 +19,7 @@ export async function scaffoldBeatApp(
   options: ScaffoldOptions,
   baseDir: string,
 ): Promise<ScaffoldResult> {
-  const targetDirectory = resolve(options.targetDirectory);
+  const targetDirectory = await canonicalTargetDirectory(options.targetDirectory);
   const packageName = sanitizePackageName(options.packageName);
   const ui = options.ui ?? false;
   const existingEntries = await readDirectoryEntries(targetDirectory);
@@ -31,29 +32,15 @@ export async function scaffoldBeatApp(
 
   const templatesRoot = resolve(baseDir, "templates");
   const templateDir = resolveTemplateDirectory(ui, templatesRoot);
-  const monorepoRoot = resolve(baseDir, "..");
   const files = collectTemplateFiles(
     templateDir,
     packageName,
     targetDirectory,
-    monorepoRoot,
+    options.workspaceRoot,
     ui,
   );
 
-  await Promise.all(
-    Object.entries(files).map(async ([relativePath, content]) => {
-      const outputPath = resolve(targetDirectory, relativePath);
-      const parentPath = relativePath.includes("/")
-        ? resolve(
-            targetDirectory,
-            relativePath.slice(0, relativePath.lastIndexOf("/")),
-          )
-        : targetDirectory;
-
-      await mkdir(parentPath, { recursive: true });
-      await writeFile(outputPath, content, "utf8");
-    }),
-  );
+  await writeScaffoldFiles(targetDirectory, files, options.force);
 
   return { packageName, targetDirectory, ui };
 }

@@ -1,0 +1,60 @@
+name: Support request
+description: Ask for usage guidance or troubleshooting help
+title: "[Support]: "
+labels:
+  - question
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for troubleshooting, API usage questions, or help choosing an approach.
+
+        For security vulnerabilities, do not open a public issue. Use the repository security policy instead.
+  - type: input
+    id: package_name
+    attributes:
+      label: Package
+      placeholder: "@ochairo/beat-create"
+    validations:
+      required: true
+  - type: input
+    id: package_version
+    attributes:
+      label: Package version
+      placeholder: 1.0.0
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe the outcome you want, not only the API you tried first
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What have you tried already?
+      description: Include relevant code, docs you followed, and where the result diverged
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Runtime, OS, browser, framework, bundler, package manager, and related package versions
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Error output, screenshots, repository links, or constraints
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I read the README and relevant docs first
+          required: true
+        - label: I searched existing issues for related questions
+          required: true
+        - label: This is not a security vulnerability or private disclosure issue
+          required: true

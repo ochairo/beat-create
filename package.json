@@ -1,6 +1,6 @@
 {
   "name": "@ochairo/beat-create",
-  "version": "1.6.6",
+  "version": "2.0.0",
   "description": "Scaffold a Beat application with Vite, TypeScript, and Pulse.",
   "type": "module",
   "bin": {
@@ -40,7 +40,7 @@
     "url": "https://github.com/ochairo/beat-create/issues"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "^24.22.1 || >=26.12.1"
   },
   "scripts": {
     "validate": "pnpm test && pnpm typecheck && pnpm build",
@@ -49,8 +49,9 @@
     "test": "vitest run"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0",
+    "@types/node": "^24.19.2",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.1"
+    "vitest": "^4.1.12",
+    "vite": "^7.3.7"
   }
 }

@@ -1,7 +1,7 @@
-export { scaffoldBeatApp, sanitizePackageName } from "./scaffold";
-export { main } from "./cli";
+export { scaffoldBeatApp, sanitizePackageName } from "./scaffold.js";
+export { main } from "./cli.js";
 export type {
   ScaffoldOptions,
   ScaffoldResult,
   WorkspacePackages,
-} from "./types";
+} from "./types.js";
